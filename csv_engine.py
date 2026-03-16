@@ -1,8 +1,7 @@
 class CSVEngine:
     def __init__(s): s.tables={}
     def load(s, name, text, sep=","):
-        lines=[l.strip() for l in text.strip().split("
-") if l.strip()]
+        lines=[l.strip() for l in text.strip().split("\n") if l.strip()]
         headers=lines[0].split(sep)
         rows=[]
         for line in lines[1:]:
@@ -33,14 +32,10 @@ class CSVEngine:
         return{k:ops[fn](v) for k,v in groups.items()}
 def demo():
     db=CSVEngine()
-    db.load("sales","product,qty,price
-Apple,10,1.5
-Banana,20,0.75
-Apple,5,1.5
-Cherry,15,2.0
-Banana,8,0.75")
-    print("All:",db.select("sales"))
-    print("Apples:",db.select("sales",where=lambda r:r["product"]=="Apple"))
-    print("Sum by product:",db.aggregate("sales","product","qty","sum"))
-    print("Avg price:",db.aggregate("sales","product","price","avg"))
+    data="product,qty,price\nApple,10,1.5\nBanana,20,0.75\nApple,5,1.5\nCherry,15,2.0\nBanana,8,0.75"
+    db.load("sales", data)
+    print("All:", db.select("sales"))
+    print("Apples:", db.select("sales", where=lambda r: r["product"]=="Apple"))
+    print("Sum qty:", db.aggregate("sales", "product", "qty", "sum"))
+    print("Avg price:", db.aggregate("sales", "product", "price", "avg"))
 if __name__ == "__main__": demo()
